@@ -56,6 +56,7 @@ def get_1m_bars(broker: AlpacaBroker, symbol: str, limit: int = 60):
         from alpaca.data.historical import StockHistoricalDataClient
         from alpaca.data.requests import StockBarsRequest
         from alpaca.data.timeframe import TimeFrame
+        from alpaca.data.enums import DataFeed
 
         client = StockHistoricalDataClient(
             api_key=ALPACA_API_KEY,
@@ -71,12 +72,14 @@ def get_1m_bars(broker: AlpacaBroker, symbol: str, limit: int = 60):
             start=start,
             end=end,
             limit=limit,
+            feed=DataFeed.IEX,  # 使用 IEX 数据源（免费）
         )
 
         bars = client.get_stock_bars(request)
         df = bars.df
 
         if df.empty:
+            logger.debug(f"{symbol} 数据为空")
             return None
 
         # 处理 MultiIndex
@@ -88,10 +91,18 @@ def get_1m_bars(broker: AlpacaBroker, symbol: str, limit: int = 60):
             df.index = df.index.tz_localize("UTC")
         df.index = df.index.tz_convert(NY)
 
+        # 成功获取数据
+        latest = df.iloc[-1]
+        logger.info(
+            f"✓ {symbol} 数据获取成功: {len(df)}条 | "
+            f"最新: ${latest['close']:.2f} | "
+            f"时间: {df.index[-1].strftime('%H:%M')}"
+        )
+
         return df
 
     except Exception as e:
-        logger.warning(f"获取 {symbol} 数据失败: {e}")
+        logger.warning(f"✗ {symbol} 数据获取失败: {e}")
         return None
 
 
@@ -354,6 +365,13 @@ def main():
                             f"[{t.strftime('%H:%M:%S')}] 持仓 {pos.symbol}: "
                             f"{pos.quantity}股, P/L: {pos.unrealized_pl_pct:.2f}%"
                         )
+
+                # 每5分钟测试一次数据获取（用于验证连接）
+                if t.minute % 5 == 0:
+                    test_symbols = SYMBOLS[:3]  # 测试前3个标的
+                    logger.info(f"数据连接测试: {test_symbols}")
+                    for sym in test_symbols:
+                        get_1m_bars(broker, sym, limit=10)
 
             # 状态日志
             logger.info(
