@@ -6,7 +6,8 @@
       "Bash(sudo apt install:*)",
       "Bash(python3 -m pip:*)",
       "Bash(python3:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(pkill:*)"
     ]
   }
 }

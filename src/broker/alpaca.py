@@ -236,3 +236,48 @@ class AlpacaBroker(BaseBroker):
         except Exception as e:
             logger.error(f"Failed to close all positions: {e}")
             return []
+
+    def place_bracket_order(
+        self,
+        symbol: str,
+        qty: int,
+        stop_loss: float,
+        take_profit: float,
+    ) -> Optional[Order]:
+        """
+        下达 Bracket Order（市价入场 + 止损 + 止盈）
+
+        Args:
+            symbol: 股票代码
+            qty: 股数
+            stop_loss: 止损价
+            take_profit: 止盈价
+
+        Returns:
+            主订单 Order 对象
+        """
+        self._ensure_connected()
+        try:
+            from alpaca.trading.requests import MarketOrderRequest, TakeProfitRequest, StopLossRequest
+            from alpaca.trading.enums import OrderSide as AlpacaOrderSide, TimeInForce, OrderClass
+
+            request = MarketOrderRequest(
+                symbol=symbol,
+                qty=qty,
+                side=AlpacaOrderSide.BUY,
+                time_in_force=TimeInForce.DAY,
+                order_class=OrderClass.BRACKET,
+                take_profit=TakeProfitRequest(limit_price=round(take_profit, 2)),
+                stop_loss=StopLossRequest(stop_price=round(stop_loss, 2)),
+            )
+
+            order = self.client.submit_order(request)
+            logger.info(
+                f"Bracket order submitted: {qty} {symbol}, "
+                f"SL=${stop_loss:.2f}, TP=${take_profit:.2f}"
+            )
+            return self._convert_order(order)
+
+        except Exception as e:
+            logger.error(f"Failed to place bracket order for {symbol}: {e}")
+            return None
