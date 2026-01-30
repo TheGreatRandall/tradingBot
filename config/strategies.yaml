@@ -1,0 +1,56 @@
+# Trading Strategies Configuration
+
+strategies:
+  ma_crossover:
+    enabled: true
+    description: "Moving Average Crossover Strategy"
+    params:
+      fast_period: 10
+      slow_period: 20
+      timeframe: "1D"
+    symbols:
+      - AAPL
+      - MSFT
+      - GOOGL
+    risk:
+      stop_loss_pct: 0.02
+      take_profit_pct: 0.05
+      position_size_pct: 0.05
+
+  rsi_strategy:
+    enabled: false
+    description: "RSI Overbought/Oversold Strategy"
+    params:
+      rsi_period: 14
+      oversold: 30
+      overbought: 70
+      timeframe: "1H"
+    symbols:
+      - SPY
+      - QQQ
+    risk:
+      stop_loss_pct: 0.015
+      take_profit_pct: 0.03
+      position_size_pct: 0.03
+
+  macd_strategy:
+    enabled: false
+    description: "MACD Signal Crossover Strategy"
+    params:
+      fast_period: 12
+      slow_period: 26
+      signal_period: 9
+      timeframe: "1D"
+    symbols:
+      - AAPL
+      - NVDA
+    risk:
+      stop_loss_pct: 0.025
+      take_profit_pct: 0.06
+      position_size_pct: 0.04
+
+# Global Settings
+defaults:
+  timeframe: "1D"
+  lookback_days: 100
+  min_volume: 1000000

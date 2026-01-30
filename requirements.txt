@@ -1,0 +1,48 @@
+# Core Trading
+alpaca-trade-api>=3.0.0
+pandas>=2.0.0
+numpy>=1.24.0
+yfinance>=0.2.0
+
+# Technical Analysis
+ta>=0.10.0
+# pandas-ta>=0.3.0  # Optional, use ta instead
+
+# Database
+sqlalchemy>=2.0.0
+aiosqlite>=0.19.0
+
+# Configuration
+python-dotenv>=1.0.0
+pyyaml>=6.0.0
+
+# Scheduling
+schedule>=1.2.0
+apscheduler>=3.10.0
+
+# Logging
+loguru>=0.7.0
+
+# HTTP/Websockets
+websocket-client>=1.6.0
+httpx>=0.24.0
+
+# Utilities
+python-dateutil>=2.8.0
+
+# Notifications (optional)
+# discord-webhook>=1.0.0
+# python-telegram-bot>=20.0
+
+# Backtesting
+# backtrader>=1.9.0
+
+# Visualization (optional)
+# matplotlib>=3.7.0
+# plotly>=5.0.0
+
+# Development
+pytest>=7.0.0
+pytest-asyncio>=0.21.0
+black>=23.0.0
+ruff>=0.0.270
